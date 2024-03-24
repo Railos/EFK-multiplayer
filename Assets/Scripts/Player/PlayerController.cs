@@ -66,16 +66,13 @@ public class PlayerController : NetworkBehaviour
         base.OnStartClient();
         if (base.IsOwner)
         {
-            cam = Camera.main;
-            cam.transform.SetParent(playerHead);
-            cam.transform.position = playerHead.position;
             controls = new Controls();
             controls.Enable();
             InstallFOV = cam.fieldOfView;
-            cam.GetComponent<HeadBob>().player = gameObject.GetComponent<Rigidbody>();
         }
         else
         {
+            cam.GetComponent<Camera>().enabled = false;
             gameObject.GetComponent<PlayerController>().enabled = false;
         }
     }
@@ -312,7 +309,7 @@ public class PlayerController : NetworkBehaviour
 
         isDrainingStaminaRunning = false;
     }
-
+    
     private void MouseMoving()
     {
         if (Cursor.lockState == CursorLockMode.Locked && Enabled)
@@ -326,7 +323,7 @@ public class PlayerController : NetworkBehaviour
             xRotation = Mathf.Clamp(xRotation, -lookXDownLimit, lookXUpLimit);
 
             // rotate cam and orientation
-            cam.transform.rotation = Quaternion.Euler(-xRotation, yRotation, transform.eulerAngles.z);
+            playerHead.transform.rotation = Quaternion.Euler(-xRotation, yRotation, transform.eulerAngles.z);
             transform.rotation = Quaternion.Euler(transform.eulerAngles.x, yRotation, transform.eulerAngles.z);
 
             if (isRunning && Moving) cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, RunningFOV, SpeedToFOV * Time.deltaTime);

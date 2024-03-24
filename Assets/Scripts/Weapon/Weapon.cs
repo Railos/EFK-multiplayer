@@ -12,7 +12,7 @@ public class Weapon : NetworkBehaviour
     public Vector2 spread;
     private bool shootingInput;
     private bool canShoot = true;
-    public GameObject camRecoil;
+    public GameObject GunHolder;
     public Camera cam;
     public Transform attackPoint;
     public GameObject bullet;
@@ -25,7 +25,7 @@ public class Weapon : NetworkBehaviour
         if (base.IsOwner)
         {
             cam = Camera.main;
-            transform.parent.SetParent(cam.transform);
+            GunHolder.transform.SetParent(cam.transform);
         }
     }
 
@@ -68,7 +68,7 @@ public class Weapon : NetworkBehaviour
 
         Vector3 bulletDirection = attackPoint.forward + new Vector3(x, y, 0);
         
-        SpawnBullet(bullet, attackPoint.position, bulletDirection.normalized);
+        SpawnBullet(bullet, attackPoint.position, bulletDirection);
         
         GetComponent<AudioSource>().PlayOneShot(shootSound);
         Invoke(nameof(ResetShot), shootSpeed);
@@ -79,11 +79,12 @@ public class Weapon : NetworkBehaviour
         canShoot = true;
     }
 
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     public void SpawnBullet(GameObject prefab, Vector3 position, Vector3 direction)
     {
         GameObject spawned = Instantiate(prefab, position, Quaternion.identity);
         base.Spawn(spawned);
+        spawned.transform.forward = direction.normalized;
         MoveBullet(spawned, direction);
     }
 
@@ -91,7 +92,7 @@ public class Weapon : NetworkBehaviour
     public void MoveBullet(GameObject spawned, Vector3 direction)
     {
         spawned.transform.forward = direction;
-        spawned.GetComponent<Rigidbody>().AddForce(direction * 50f, ForceMode.Impulse);
+        spawned.GetComponent<Rigidbody>().AddForce(direction.normalized * 100f, ForceMode.Impulse);
     }
     
 }

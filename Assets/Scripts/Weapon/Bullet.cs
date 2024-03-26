@@ -13,11 +13,11 @@ public class Bullet : NetworkBehaviour
     private void Start()
     {
         Invoke(nameof(DestroyBullet), 5f);
+        GetComponent<Rigidbody>().AddForce(transform.forward * 300f, ForceMode.Impulse);
     }
 
     private void OnCollisionEnter(Collision other)
     {
-        Debug.Log("ZV");
         if (other.gameObject.GetComponent<Enemy>())
         {
             other.gameObject.GetComponent<Enemy>().DealDamage(other.gameObject.GetComponent<Enemy>(), damage);

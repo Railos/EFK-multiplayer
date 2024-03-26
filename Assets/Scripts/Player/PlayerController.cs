@@ -72,6 +72,8 @@ public class PlayerController : NetworkBehaviour
         }
         else
         {
+            gameObject.GetComponent<PlayerInventory>().inventoryCanvas.SetActive(false);
+            gameObject.GetComponent<PlayerInventory>().enabled = false;
             cam.GetComponent<Camera>().enabled = false;
             gameObject.GetComponent<PlayerController>().enabled = false;
         }

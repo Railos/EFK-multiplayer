@@ -83,16 +83,8 @@ public class Weapon : NetworkBehaviour
     public void SpawnBullet(GameObject prefab, Vector3 position, Vector3 direction)
     {
         GameObject spawned = Instantiate(prefab, position, Quaternion.identity);
-        base.Spawn(spawned);
         spawned.transform.forward = direction.normalized;
-        MoveBullet(spawned, direction);
+        ServerManager.Spawn(spawned);
     }
 
-    [ObserversRpc]
-    public void MoveBullet(GameObject spawned, Vector3 direction)
-    {
-        spawned.transform.forward = direction;
-        spawned.GetComponent<Rigidbody>().AddForce(direction.normalized * 100f, ForceMode.Impulse);
-    }
-    
 }
